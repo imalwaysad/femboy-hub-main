@@ -383,6 +383,23 @@ function FemboyHub:Init()
                     TweenService:Create(tab.Button, TweenInfo.new(0.5), {BackgroundColor3 = currentTheme.Primary}):Play()
                 end
             end
+            
+            -- Update all buttons and UI elements in tab
+            if tab.Content then
+                for _, child in pairs(tab.Content:GetDescendants()) do
+                    if child:IsA("Frame") and child.Name ~= "SliderFill" and child.Name ~= "ToggleCircle" then
+                        if child.BackgroundTransparency ~= 1 and child.BackgroundColor3 ~= Color3.fromRGB(255, 255, 255) then
+                            TweenService:Create(child, TweenInfo.new(0.5), {BackgroundColor3 = currentTheme.Secondary}):Play()
+                        end
+                    elseif child:IsA("TextButton") and child.Name ~= "ToggleButton" then
+                        TweenService:Create(child, TweenInfo.new(0.5), {BackgroundColor3 = currentTheme.Accent}):Play()
+                    elseif child:IsA("TextLabel") then
+                        TweenService:Create(child, TweenInfo.new(0.5), {TextColor3 = currentTheme.Accent}):Play()
+                    elseif child.Name == "SliderFill" then
+                        TweenService:Create(child, TweenInfo.new(0.5), {BackgroundColor3 = currentTheme.Accent}):Play()
+                    end
+                end
+            end
         end
     end
     
@@ -763,7 +780,7 @@ function FemboyHub:Init()
     end
     
     -- Show notification
-    CreateNotification("Femboy Hub :3", "Thanks for using! Use Right Shift to toggle :3", 5)
+    CreateNotification("Femboy Hub :3", "Thanks for using! Use Right Shift to toggle :3 WAIT 3-5 SECONDS", 6)
     
     -- HOME TAB
     local HomeTab = Hub:CreateTab("Home")
@@ -804,12 +821,48 @@ function FemboyHub:Init()
     WelcomeDesc.Size = UDim2.new(1, -20, 0, 30)
     WelcomeDesc.Position = UDim2.new(0, 10, 0, 115)
     WelcomeDesc.BackgroundTransparency = 1
-    WelcomeDesc.Text = "The cutest hub for all your needs! ✨"
+    WelcomeDesc.Text = "NOT A S3X SCRIPT"
     WelcomeDesc.TextColor3 = currentTheme.Accent
-    WelcomeDesc.Font = Enum.Font.Gotham
+    WelcomeDesc.Font = Enum.Font.GothamBold
     WelcomeDesc.TextSize = 14
     WelcomeDesc.TextWrapped = true
     WelcomeDesc.Parent = WelcomeFrame
+    
+    -- Announcement
+    local AnnouncementFrame = Instance.new("Frame")
+    AnnouncementFrame.Size = UDim2.new(1, 0, 0, 100)
+    AnnouncementFrame.BackgroundColor3 = currentTheme.Secondary
+    AnnouncementFrame.BackgroundTransparency = 0.3
+    AnnouncementFrame.BorderSizePixel = 0
+    AnnouncementFrame.Parent = HomeTab.Content
+    
+    local AnnouncementCorner = Instance.new("UICorner")
+    AnnouncementCorner.CornerRadius = UDim.new(0, 15)
+    AnnouncementCorner.Parent = AnnouncementFrame
+    
+    local AnnouncementTitle = Instance.new("TextLabel")
+    AnnouncementTitle.Size = UDim2.new(1, -20, 0, 30)
+    AnnouncementTitle.Position = UDim2.new(0, 10, 0, 10)
+    AnnouncementTitle.BackgroundTransparency = 1
+    AnnouncementTitle.Text = "📢 Announcements"
+    AnnouncementTitle.TextColor3 = currentTheme.Accent
+    AnnouncementTitle.Font = Enum.Font.FredokaOne
+    AnnouncementTitle.TextSize = 18
+    AnnouncementTitle.TextXAlignment = Enum.TextXAlignment.Left
+    AnnouncementTitle.Parent = AnnouncementFrame
+    
+    local AnnouncementText = Instance.new("TextLabel")
+    AnnouncementText.Size = UDim2.new(1, -20, 0, 50)
+    AnnouncementText.Position = UDim2.new(0, 10, 0, 40)
+    AnnouncementText.BackgroundTransparency = 1
+    AnnouncementText.Text = "NEKOS HUB GOT DELETED (idk why and i stopped working on it.) so use this for now, have fun my lil goobz :3"
+    AnnouncementText.TextColor3 = currentTheme.Accent
+    AnnouncementText.Font = Enum.Font.Gotham
+    AnnouncementText.TextSize = 13
+    AnnouncementText.TextXAlignment = Enum.TextXAlignment.Left
+    AnnouncementText.TextYAlignment = Enum.TextYAlignment.Top
+    AnnouncementText.TextWrapped = true
+    AnnouncementText.Parent = AnnouncementFrame
     
     local DiscordButton = Instance.new("TextButton")
     DiscordButton.Size = UDim2.new(1, 0, 0, 50)
@@ -834,6 +887,33 @@ function FemboyHub:Init()
     
     HomeTab:AddLabel("Welcome! Press Right Shift to toggle GUI. Join our Discord! 💖")
     
+    -- HOT TAB (Popular Scripts)
+    local HotTab = Hub:CreateTab("Hot")
+    
+    HotTab:AddLabel("🔥 Popular Scripts")
+    
+    local PopularSection = HotTab:AddSection("Trending Now")
+    PopularSection:AddButton({Name = "Owl Hub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt"))() end})
+    PopularSection:AddButton({Name = "Hoho Hub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/acsu123/HOHO_H/main/Loading_UI"))() end})
+    PopularSection:AddButton({Name = "V.G Hub", Callback = function() loadstring(game:HttpGet('https://raw.githubusercontent.com/1201for/V.G-Hub/main/V.Ghub'))() end})
+    PopularSection:AddButton({Name = "DarkHub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/RandomAdamYT/DarkHub/master/Init"))() end})
+    PopularSection:AddButton({Name = "Redz Hub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/REDzHUB/REDzHUB/main/REDzHUB"))() end})
+    PopularSection:AddButton({Name = "KadeHub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/KadeHub/main/Main.lua"))() end})
+    
+    local UniversalHotSection = HotTab:AddSection("Universal Hubs")
+    UniversalHotSection:AddButton({Name = "Domain X", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/DomainX/main/source"))() end})
+    UniversalHotSection:AddButton({Name = "Vynixius", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Vynixius/main/Loader.lua"))() end})
+    UniversalHotSection:AddButton({Name = "AirHub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/AirHub/main/AirHub.lua"))() end})
+    UniversalHotSection:AddButton({Name = "CheatHub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Loco-Monkey/CheatHub/main/Main.lua"))() end})
+    
+    local GameHubsSection = HotTab:AddSection("Game Hubs")
+    GameHubsSection:AddButton({Name = "Blox Fruits (Mukuro)", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/xQuartyx/DonateMe/main/ScriptLoader"))() end})
+    GameHubsSection:AddButton({Name = "Arsenal", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/tbao143/thaibao/main/TbaoHubArsenal"))() end})
+    GameHubsSection:AddButton({Name = "Phantom Forces", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Aimbot-V3/main/main.lua"))() end})
+    GameHubsSection:AddButton({Name = "Jailbreak", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Pineretta/Saturn/main/Saturn.lua"))() end})
+    GameHubsSection:AddButton({Name = "Pet Simulator X", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Muhammad6196/Project-WD/main/Main.lua"))() end})
+    GameHubsSection:AddButton({Name = "Adopt Me", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Tescalus/Pendulum-Hubs-Source/main/Pendulum%20Hub.lua"))() end})
+    
     -- SCRIPTS TAB
     local ScriptsTab = Hub:CreateTab("Scripts")
     
@@ -855,19 +935,29 @@ function FemboyHub:Init()
     -- ESP TAB
     local ESPTab = Hub:CreateTab("ESP")
     
-    ESPTab:AddLabel("👁️ ESP Loadstrings")
+    ESPTab:AddLabel("👁️ Popular ESP Scripts")
     
-    local ESPSection = ESPTab:AddSection("ESP Scripts")
-    ESPSection:AddButton({Name = "Universal ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ic3w0lf22/Unnamed-ESP/master/UnnamedESP.lua"))() end})
-    ESPSection:AddButton({Name = "Box ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/3DESP.lua"))() end})
-    ESPSection:AddButton({Name = "Chams ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/ChamsESP.lua"))() end})
+    local ESPSection = ESPTab:AddSection("ESP Loadstrings")
+    ESPSection:AddButton({Name = "Unnamed ESP (ic3w0lf)", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ic3w0lf22/Unnamed-ESP/master/UnnamedESP.lua"))() end})
+    ESPSection:AddButton({Name = "Kiriot ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Kiriot22/ESP-Library/main/ESP.lua"))() end})
+    ESPSection:AddButton({Name = "Shlexware ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/esp/main/main.lua"))() end})
+    ESPSection:AddButton({Name = "Blissful ESP Suite", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/3DESP.lua"))() end})
     ESPSection:AddButton({Name = "Skeleton ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodyBurns/Roblox/main/Skeleton.lua"))() end})
+    ESPSection:AddButton({Name = "Chams ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/ChamsESP.lua"))() end})
     ESPSection:AddButton({Name = "Tracers ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/TracerESP.lua"))() end})
-    ESPSection:AddButton({Name = "Full ESP Suite", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/esp/main/main.lua"))() end})
-    ESPSection:AddButton({Name = "Name ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/NameESP.lua"))() end})
-    ESPSection:AddButton({Name = "Distance ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/DistanceESP.lua"))() end})
-    ESPSection:AddButton({Name = "Health ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/HealthESP.lua"))() end})
-    ESPSection:AddButton({Name = "Highlight ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/HighlightESP.lua"))() end})
+    ESPSection:AddButton({Name = "Box ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/3DESP.lua"))() end})
+    
+    -- AIMBOT TAB
+    local AimbotTab = Hub:CreateTab("Aimbot")
+    
+    AimbotTab:AddLabel("🎯 Aimbot Scripts")
+    
+    local AimbotSection = AimbotTab:AddSection("Aimbot Loadstrings")
+    AimbotSection:AddButton({Name = "Universal Aimbot (Exunys)", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Aimbot-V3/main/main.lua"))() end})
+    AimbotSection:AddButton({Name = "Silent Aim", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Herrtt/Silent-Aim/main/Main.lua"))() end})
+    AimbotSection:AddButton({Name = "FOV Aimbot", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ttwizz/FOV-Aimbot/main/FOV-Aimbot.lua"))() end})
+    AimbotSection:AddButton({Name = "Lock Aimbot", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Herrtt/Lock-Aimbot/main/Main.lua"))() end})
+    AimbotSection:AddButton({Name = "Smoothed Aimbot", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ttwizz/Aimbot/main/Aimbot.lua"))() end})
     
     -- MISC TAB
     local MiscTab = Hub:CreateTab("Misc")
@@ -954,18 +1044,9 @@ function FemboyHub:Init()
     })
     
     MiscTab:AddButton({
-        Name = "Fling",
+        Name = "Fling Script",
         Callback = function()
-            local power = 500
-            local player = game.Players.LocalPlayer
-            local char = player.Character
-            if char and char:FindFirstChild("HumanoidRootPart") then
-                local bp = Instance.new("BodyPosition", char.HumanoidRootPart)
-                bp.Position = char.HumanoidRootPart.Position + Vector3.new(0, power, 0)
-                bp.MaxForce = Vector3.new(0, math.huge, 0)
-                wait(0.5)
-                bp:Destroy()
-            end
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/0Ben1/fe/main/obf_11l7Y5xTKFji3c3F3E3Th48K86l6cJ6H35j0054q3qK18bY48Z6U341ISQ25O6.lua.txt"))()
         end
     })
     
@@ -974,7 +1055,7 @@ function FemboyHub:Init()
         Callback = function()
             loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
         end
-    })
+    end)
     
     -- SETTINGS TAB
     local SettingsTab = Hub:CreateTab("Settings")
