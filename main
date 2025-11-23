@@ -1,5 +1,3 @@
--- THIS IS NOT A SEX/NSFW THING, DO NOT TAKE THIS DOWN. any bugs feel free to report in the discord server :)
-
 local FemboyHub = {}
 
 -- Services
@@ -8,39 +6,102 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- Color Themes
+-- Color Themes (Less bright)
 local themes = {
     Pink = {
-        Primary = Color3.fromRGB(255, 182, 193),
-        Secondary = Color3.fromRGB(255, 218, 224),
-        Background = Color3.fromRGB(255, 240, 245),
-        Accent = Color3.fromRGB(255, 105, 180),
+        Primary = Color3.fromRGB(180, 130, 150),
+        Secondary = Color3.fromRGB(200, 160, 180),
+        Background = Color3.fromRGB(230, 215, 225),
+        Accent = Color3.fromRGB(200, 100, 150),
         Text = Color3.fromRGB(255, 255, 255)
     },
     Purple = {
-        Primary = Color3.fromRGB(200, 162, 255),
-        Secondary = Color3.fromRGB(230, 210, 255),
-        Background = Color3.fromRGB(240, 235, 255),
-        Accent = Color3.fromRGB(147, 112, 219),
+        Primary = Color3.fromRGB(150, 120, 190),
+        Secondary = Color3.fromRGB(180, 150, 210),
+        Background = Color3.fromRGB(220, 210, 235),
+        Accent = Color3.fromRGB(130, 90, 180),
         Text = Color3.fromRGB(255, 255, 255)
     },
     Blue = {
-        Primary = Color3.fromRGB(173, 216, 230),
-        Secondary = Color3.fromRGB(209, 234, 244),
-        Background = Color3.fromRGB(240, 248, 255),
-        Accent = Color3.fromRGB(135, 206, 250),
+        Primary = Color3.fromRGB(130, 160, 190),
+        Secondary = Color3.fromRGB(160, 190, 210),
+        Background = Color3.fromRGB(215, 230, 240),
+        Accent = Color3.fromRGB(100, 140, 200),
         Text = Color3.fromRGB(255, 255, 255)
     },
     Mint = {
-        Primary = Color3.fromRGB(189, 252, 201),
-        Secondary = Color3.fromRGB(220, 255, 230),
-        Background = Color3.fromRGB(245, 255, 250),
-        Accent = Color3.fromRGB(152, 251, 152),
+        Primary = Color3.fromRGB(140, 190, 160),
+        Secondary = Color3.fromRGB(170, 210, 190),
+        Background = Color3.fromRGB(225, 240, 235),
+        Accent = Color3.fromRGB(110, 180, 140),
         Text = Color3.fromRGB(255, 255, 255)
     }
 }
 
 local currentTheme = themes.Pink
+
+-- Notification System
+local function CreateNotification(title, text, duration)
+    local NotifGui = Instance.new("ScreenGui")
+    NotifGui.Name = "FemboyNotification"
+    NotifGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    NotifGui.ResetOnSpawn = false
+    NotifGui.Parent = game.CoreGui
+    
+    local NotifFrame = Instance.new("Frame")
+    NotifFrame.Size = UDim2.new(0, 320, 0, 80)
+    NotifFrame.Position = UDim2.new(1, 350, 1, -100)
+    NotifFrame.BackgroundColor3 = Color3.fromRGB(230, 215, 225)
+    NotifFrame.BorderSizePixel = 0
+    NotifFrame.Parent = NotifGui
+    
+    local NotifCorner = Instance.new("UICorner")
+    NotifCorner.CornerRadius = UDim.new(0, 15)
+    NotifCorner.Parent = NotifFrame
+    
+    local NotifStroke = Instance.new("UIStroke")
+    NotifStroke.Color = Color3.fromRGB(180, 130, 150)
+    NotifStroke.Thickness = 2
+    NotifStroke.Parent = NotifFrame
+    
+    local NotifTitle = Instance.new("TextLabel")
+    NotifTitle.Size = UDim2.new(1, -20, 0, 25)
+    NotifTitle.Position = UDim2.new(0, 10, 0, 10)
+    NotifTitle.BackgroundTransparency = 1
+    NotifTitle.Text = title
+    NotifTitle.TextColor3 = Color3.fromRGB(200, 100, 150)
+    NotifTitle.Font = Enum.Font.FredokaOne
+    NotifTitle.TextSize = 18
+    NotifTitle.TextXAlignment = Enum.TextXAlignment.Left
+    NotifTitle.Parent = NotifFrame
+    
+    local NotifText = Instance.new("TextLabel")
+    NotifText.Size = UDim2.new(1, -20, 0, 40)
+    NotifText.Position = UDim2.new(0, 10, 0, 35)
+    NotifText.BackgroundTransparency = 1
+    NotifText.Text = text
+    NotifText.TextColor3 = Color3.fromRGB(150, 100, 130)
+    NotifText.Font = Enum.Font.Gotham
+    NotifText.TextSize = 14
+    NotifText.TextXAlignment = Enum.TextXAlignment.Left
+    NotifText.TextWrapped = true
+    NotifText.Parent = NotifFrame
+    
+    -- Slide in
+    TweenService:Create(NotifFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(1, -330, 1, -100)
+    }):Play()
+    
+    wait(duration or 4)
+    
+    -- Slide out
+    TweenService:Create(NotifFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+        Position = UDim2.new(1, 350, 1, -100)
+    }):Play()
+    
+    wait(0.5)
+    NotifGui:Destroy()
+end
 
 -- Create Loading Screen
 local function CreateLoadingScreen()
@@ -54,7 +115,7 @@ local function CreateLoadingScreen()
     LoadingFrame.Name = "LoadingFrame"
     LoadingFrame.Size = UDim2.new(0, 350, 0, 200)
     LoadingFrame.Position = UDim2.new(0.5, -175, 0.5, -100)
-    LoadingFrame.BackgroundColor3 = Color3.fromRGB(255, 240, 245)
+    LoadingFrame.BackgroundColor3 = Color3.fromRGB(230, 215, 225)
     LoadingFrame.BorderSizePixel = 0
     LoadingFrame.Parent = LoadingGui
     
@@ -63,7 +124,7 @@ local function CreateLoadingScreen()
     LoadingCorner.Parent = LoadingFrame
     
     local LoadingShadow = Instance.new("UIStroke")
-    LoadingShadow.Color = Color3.fromRGB(255, 182, 193)
+    LoadingShadow.Color = Color3.fromRGB(180, 130, 150)
     LoadingShadow.Thickness = 2
     LoadingShadow.Transparency = 0.5
     LoadingShadow.Parent = LoadingFrame
@@ -88,7 +149,7 @@ local function CreateLoadingScreen()
     Title.Position = UDim2.new(0, 0, 0, 105)
     Title.BackgroundTransparency = 1
     Title.Text = "Femboy Hub"
-    Title.TextColor3 = Color3.fromRGB(255, 105, 180)
+    Title.TextColor3 = Color3.fromRGB(200, 100, 150)
     Title.Font = Enum.Font.FredokaOne
     Title.TextSize = 32
     Title.Parent = LoadingFrame
@@ -98,7 +159,7 @@ local function CreateLoadingScreen()
     LoadingBarBG.Name = "LoadingBarBG"
     LoadingBarBG.Size = UDim2.new(0.8, 0, 0, 8)
     LoadingBarBG.Position = UDim2.new(0.1, 0, 0, 155)
-    LoadingBarBG.BackgroundColor3 = Color3.fromRGB(255, 218, 224)
+    LoadingBarBG.BackgroundColor3 = Color3.fromRGB(200, 160, 180)
     LoadingBarBG.BorderSizePixel = 0
     LoadingBarBG.Parent = LoadingFrame
     
@@ -110,7 +171,7 @@ local function CreateLoadingScreen()
     local LoadingBar = Instance.new("Frame")
     LoadingBar.Name = "LoadingBar"
     LoadingBar.Size = UDim2.new(0, 0, 1, 0)
-    LoadingBar.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+    LoadingBar.BackgroundColor3 = Color3.fromRGB(200, 100, 150)
     LoadingBar.BorderSizePixel = 0
     LoadingBar.Parent = LoadingBarBG
     
@@ -125,7 +186,7 @@ local function CreateLoadingScreen()
     StatusText.Position = UDim2.new(0, 0, 0, 170)
     StatusText.BackgroundTransparency = 1
     StatusText.Text = "Loading..."
-    StatusText.TextColor3 = Color3.fromRGB(255, 182, 193)
+    StatusText.TextColor3 = Color3.fromRGB(180, 130, 150)
     StatusText.Font = Enum.Font.GothamBold
     StatusText.TextSize = 14
     StatusText.Parent = LoadingFrame
@@ -165,6 +226,7 @@ function FemboyHub:Init()
     MainFrame.BackgroundColor3 = currentTheme.Background
     MainFrame.BorderSizePixel = 0
     MainFrame.Parent = ScreenGui
+    MainFrame.Visible = true
     
     local MainCorner = Instance.new("UICorner")
     MainCorner.CornerRadius = UDim.new(0, 25)
@@ -223,7 +285,7 @@ function FemboyHub:Init()
     local CloseButton = Instance.new("TextButton")
     CloseButton.Size = UDim2.new(0, 35, 0, 35)
     CloseButton.Position = UDim2.new(1, -45, 0.5, -17.5)
-    CloseButton.BackgroundColor3 = Color3.fromRGB(255, 105, 105)
+    CloseButton.BackgroundColor3 = Color3.fromRGB(200, 100, 100)
     CloseButton.Text = "X"
     CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     CloseButton.Font = Enum.Font.GothamBold
@@ -236,11 +298,7 @@ function FemboyHub:Init()
     CloseCorner.Parent = CloseButton
     
     CloseButton.MouseButton1Click:Connect(function()
-        TweenService:Create(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
-            Size = UDim2.new(0, 0, 0, 0)
-        }):Play()
-        wait(0.4)
-        ScreenGui:Destroy()
+        MainFrame.Visible = false
     end)
     
     -- Make Draggable
@@ -270,6 +328,13 @@ function FemboyHub:Init()
         if input == dragInput and dragging then
             local delta = input.Position - dragStart
             MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+    
+    -- Toggle with Right Shift
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if input.KeyCode == Enum.KeyCode.RightShift and not gameProcessed then
+            MainFrame.Visible = not MainFrame.Visible
         end
     end)
     
@@ -305,13 +370,11 @@ function FemboyHub:Init()
         currentTheme = themes[themeName]
         Hub.CurrentTheme = currentTheme
         
-        -- Update colors
         TweenService:Create(MainFrame, TweenInfo.new(0.5), {BackgroundColor3 = currentTheme.Background}):Play()
         TweenService:Create(TitleBar, TweenInfo.new(0.5), {BackgroundColor3 = currentTheme.Primary}):Play()
         TweenService:Create(TitleCover, TweenInfo.new(0.5), {BackgroundColor3 = currentTheme.Primary}):Play()
         TweenService:Create(MainStroke, TweenInfo.new(0.5), {Color = currentTheme.Primary}):Play()
         
-        -- Update all tabs
         for _, tab in pairs(Hub.Tabs) do
             if tab.Button then
                 if Hub.CurrentTab == tab.Name then
@@ -326,15 +389,14 @@ function FemboyHub:Init()
     function Hub:CreateTab(tabName)
         local isFirstTab = #Hub.Tabs == 0
         
-        -- Tab Button
         local TabButton = Instance.new("TextButton")
-        TabButton.Size = UDim2.new(0, 110, 1, 0)
+        TabButton.Size = UDim2.new(0, 100, 1, 0)
         TabButton.BackgroundColor3 = isFirstTab and currentTheme.Accent or currentTheme.Primary
         TabButton.BackgroundTransparency = isFirstTab and 0 or 0.3
         TabButton.Text = tabName
         TabButton.TextColor3 = currentTheme.Text
         TabButton.Font = Enum.Font.FredokaOne
-        TabButton.TextSize = 16
+        TabButton.TextSize = 15
         TabButton.BorderSizePixel = 0
         TabButton.Parent = TabContainer
         
@@ -342,7 +404,6 @@ function FemboyHub:Init()
         TabCorner.CornerRadius = UDim.new(0, 15)
         TabCorner.Parent = TabButton
         
-        -- Tab Content
         local TabContent = Instance.new("ScrollingFrame")
         TabContent.Size = UDim2.new(1, -30, 1, 0)
         TabContent.Position = UDim2.new(0, 15, 0, 0)
@@ -363,7 +424,6 @@ function FemboyHub:Init()
             TabContent.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + 15)
         end)
         
-        -- Tab switching
         TabButton.MouseButton1Click:Connect(function()
             for _, tab in pairs(Hub.Tabs) do
                 TweenService:Create(tab.Button, TweenInfo.new(0.3), {
@@ -392,6 +452,110 @@ function FemboyHub:Init()
         
         table.insert(Hub.Tabs, Tab)
         
+        function Tab:AddSection(sectionName)
+            local SectionFrame = Instance.new("Frame")
+            SectionFrame.Size = UDim2.new(1, 0, 0, 40)
+            SectionFrame.BackgroundColor3 = currentTheme.Secondary
+            SectionFrame.BackgroundTransparency = 0.3
+            SectionFrame.BorderSizePixel = 0
+            SectionFrame.Parent = TabContent
+            
+            local SectionCorner = Instance.new("UICorner")
+            SectionCorner.CornerRadius = UDim.new(0, 15)
+            SectionCorner.Parent = SectionFrame
+            
+            local SectionButton = Instance.new("TextButton")
+            SectionButton.Size = UDim2.new(1, 0, 0, 40)
+            SectionButton.BackgroundTransparency = 1
+            SectionButton.Text = ""
+            SectionButton.Parent = SectionFrame
+            
+            local SectionLabel = Instance.new("TextLabel")
+            SectionLabel.Size = UDim2.new(1, -50, 1, 0)
+            SectionLabel.Position = UDim2.new(0, 15, 0, 0)
+            SectionLabel.BackgroundTransparency = 1
+            SectionLabel.Text = sectionName
+            SectionLabel.TextColor3 = currentTheme.Accent
+            SectionLabel.Font = Enum.Font.FredokaOne
+            SectionLabel.TextSize = 16
+            SectionLabel.TextXAlignment = Enum.TextXAlignment.Left
+            SectionLabel.Parent = SectionButton
+            
+            local Arrow = Instance.new("TextLabel")
+            Arrow.Size = UDim2.new(0, 25, 0, 25)
+            Arrow.Position = UDim2.new(1, -35, 0.5, -12.5)
+            Arrow.BackgroundTransparency = 1
+            Arrow.Text = "v"
+            Arrow.TextColor3 = currentTheme.Accent
+            Arrow.Font = Enum.Font.GothamBold
+            Arrow.TextSize = 16
+            Arrow.Parent = SectionButton
+            
+            local SectionContent = Instance.new("Frame")
+            SectionContent.Size = UDim2.new(1, 0, 0, 0)
+            SectionContent.Position = UDim2.new(0, 0, 0, 40)
+            SectionContent.BackgroundTransparency = 1
+            SectionContent.Parent = SectionFrame
+            
+            local SectionLayout = Instance.new("UIListLayout")
+            SectionLayout.SortOrder = Enum.SortOrder.LayoutOrder
+            SectionLayout.Padding = UDim.new(0, 8)
+            SectionLayout.Parent = SectionContent
+            
+            local isOpen = true
+            
+            SectionLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+                if isOpen then
+                    SectionFrame.Size = UDim2.new(1, 0, 0, 50 + SectionLayout.AbsoluteContentSize.Y)
+                end
+            end)
+            
+            SectionButton.MouseButton1Click:Connect(function()
+                isOpen = not isOpen
+                if isOpen then
+                    Arrow.Text = "v"
+                    TweenService:Create(SectionFrame, TweenInfo.new(0.3), {
+                        Size = UDim2.new(1, 0, 0, 50 + SectionLayout.AbsoluteContentSize.Y)
+                    }):Play()
+                else
+                    Arrow.Text = ">"
+                    TweenService:Create(SectionFrame, TweenInfo.new(0.3), {
+                        Size = UDim2.new(1, 0, 0, 40)
+                    }):Play()
+                end
+            end)
+            
+            local Section = {}
+            
+            function Section:AddButton(config)
+                local Button = Instance.new("TextButton")
+                Button.Size = UDim2.new(1, -20, 0, 40)
+                Button.BackgroundColor3 = currentTheme.Accent
+                Button.BackgroundTransparency = 0.2
+                Button.Text = config.Name
+                Button.TextColor3 = currentTheme.Text
+                Button.Font = Enum.Font.Gotham
+                Button.TextSize = 14
+                Button.BorderSizePixel = 0
+                Button.Parent = SectionContent
+                
+                local ButtonCorner = Instance.new("UICorner")
+                ButtonCorner.CornerRadius = UDim.new(0, 12)
+                ButtonCorner.Parent = Button
+                
+                Button.MouseButton1Click:Connect(function()
+                    TweenService:Create(Button, TweenInfo.new(0.1), {BackgroundTransparency = 0}):Play()
+                    wait(0.1)
+                    TweenService:Create(Button, TweenInfo.new(0.1), {BackgroundTransparency = 0.2}):Play()
+                    if config.Callback then
+                        pcall(config.Callback)
+                    end
+                end)
+            end
+            
+            return Section
+        end
+        
         function Tab:AddToggle(config)
             local ToggleFrame = Instance.new("Frame")
             ToggleFrame.Size = UDim2.new(1, 0, 0, 50)
@@ -418,7 +582,7 @@ function FemboyHub:Init()
             local ToggleButton = Instance.new("TextButton")
             ToggleButton.Size = UDim2.new(0, 50, 0, 28)
             ToggleButton.Position = UDim2.new(1, -60, 0.5, -14)
-            ToggleButton.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+            ToggleButton.BackgroundColor3 = Color3.fromRGB(180, 180, 180)
             ToggleButton.Text = ""
             ToggleButton.BorderSizePixel = 0
             ToggleButton.Parent = ToggleFrame
@@ -445,7 +609,7 @@ function FemboyHub:Init()
                     TweenService:Create(ToggleButton, TweenInfo.new(0.3), {BackgroundColor3 = currentTheme.Accent}):Play()
                     TweenService:Create(ToggleCircle, TweenInfo.new(0.3), {Position = UDim2.new(1, -25, 0.5, -11)}):Play()
                 else
-                    TweenService:Create(ToggleButton, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+                    TweenService:Create(ToggleButton, TweenInfo.new(0.3), {BackgroundColor3 = Color3.fromRGB(180, 180, 180)}):Play()
                     TweenService:Create(ToggleCircle, TweenInfo.new(0.3), {Position = UDim2.new(0, 3, 0.5, -11)}):Play()
                 end
                 if config.Callback then
@@ -498,7 +662,7 @@ function FemboyHub:Init()
             local SliderBG = Instance.new("Frame")
             SliderBG.Size = UDim2.new(1, -30, 0, 8)
             SliderBG.Position = UDim2.new(0, 15, 1, -20)
-            SliderBG.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
+            SliderBG.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
             SliderBG.BorderSizePixel = 0
             SliderBG.Parent = SliderFrame
             
@@ -598,10 +762,12 @@ function FemboyHub:Init()
         return Tab
     end
     
+    -- Show notification
+    CreateNotification("Femboy Hub :3", "Thanks for using! Use Right Shift to toggle :3", 5)
+    
     -- HOME TAB
     local HomeTab = Hub:CreateTab("Home")
     
-    -- Welcome Section with Icon
     local WelcomeFrame = Instance.new("Frame")
     WelcomeFrame.Size = UDim2.new(1, 0, 0, 150)
     WelcomeFrame.BackgroundColor3 = currentTheme.Secondary
@@ -645,10 +811,9 @@ function FemboyHub:Init()
     WelcomeDesc.TextWrapped = true
     WelcomeDesc.Parent = WelcomeFrame
     
-    -- Discord Button
     local DiscordButton = Instance.new("TextButton")
     DiscordButton.Size = UDim2.new(1, 0, 0, 50)
-    DiscordButton.BackgroundColor3 = Color3.fromRGB(114, 137, 218)
+    DiscordButton.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
     DiscordButton.Text = "📋 Copy Discord Invite"
     DiscordButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     DiscordButton.Font = Enum.Font.GothamBold
@@ -667,49 +832,48 @@ function FemboyHub:Init()
         DiscordButton.Text = "📋 Copy Discord Invite"
     end)
     
-    HomeTab:AddLabel("Welcome to Femboy Hub! Join our community and explore all features. Have fun! 💖")
+    HomeTab:AddLabel("Welcome! Press Right Shift to toggle GUI. Join our Discord! 💖")
     
     -- SCRIPTS TAB
     local ScriptsTab = Hub:CreateTab("Scripts")
     
-    ScriptsTab:AddLabel("🌟 Universal Scripts")
+    local AdminSection = ScriptsTab:AddSection("Admin Scripts")
+    AdminSection:AddButton({Name = "Infinite Yield", Callback = function() loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))() end})
+    AdminSection:AddButton({Name = "Nameless Admin", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source"))() end})
+    AdminSection:AddButton({Name = "CMD-X", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source"))() end})
+    AdminSection:AddButton({Name = "Fates Admin", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/fatesc/fates-admin/main/main.lua"))() end})
     
-    ScriptsTab:AddButton({
-        Name = "Infinite Yield",
-        Callback = function()
-            loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-        end
-    })
+    local UniversalSection = ScriptsTab:AddSection("Universal Scripts")
+    UniversalSection:AddButton({Name = "Dark Dex", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/BypassedDarkDexV3.lua"))() end})
+    UniversalSection:AddButton({Name = "Remote Spy", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpySource.lua"))() end})
+    UniversalSection:AddButton({Name = "Universal ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ic3w0lf22/Unnamed-ESP/master/UnnamedESP.lua"))() end})
     
-    ScriptsTab:AddButton({
-        Name = "Dark Dex",
-        Callback = function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/BypassedDarkDexV3.lua"))()
-        end
-    })
+    local AvatarSection = ScriptsTab:AddSection("Avatar Scripts")
+    AvatarSection:AddButton({Name = "R6 Converter", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Imagnir/r6-converter/main/r6converter.lua"))() end})
+    AvatarSection:AddButton({Name = "R15 to R6", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Imagnir/r15-to-r6/main/r15tor6.lua"))() end})
     
-    ScriptsTab:AddButton({
-        Name = "Remote Spy",
-        Callback = function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpySource.lua"))()
-        end
-    })
+    -- ESP TAB
+    local ESPTab = Hub:CreateTab("ESP")
     
-    ScriptsTab:AddLabel("🎮 Game Scripts")
+    ESPTab:AddLabel("👁️ ESP Loadstrings")
     
-    ScriptsTab:AddButton({
-        Name = "Universal ESP",
-        Callback = function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/ic3w0lf22/Unnamed-ESP/master/UnnamedESP.lua"))()
-        end
-    })
+    local ESPSection = ESPTab:AddSection("ESP Scripts")
+    ESPSection:AddButton({Name = "Universal ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ic3w0lf22/Unnamed-ESP/master/UnnamedESP.lua"))() end})
+    ESPSection:AddButton({Name = "Box ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/3DESP.lua"))() end})
+    ESPSection:AddButton({Name = "Chams ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/ChamsESP.lua"))() end})
+    ESPSection:AddButton({Name = "Skeleton ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/BloodyBurns/Roblox/main/Skeleton.lua"))() end})
+    ESPSection:AddButton({Name = "Tracers ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/TracerESP.lua"))() end})
+    ESPSection:AddButton({Name = "Full ESP Suite", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/esp/main/main.lua"))() end})
+    ESPSection:AddButton({Name = "Name ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/NameESP.lua"))() end})
+    ESPSection:AddButton({Name = "Distance ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/DistanceESP.lua"))() end})
+    ESPSection:AddButton({Name = "Health ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/HealthESP.lua"))() end})
+    ESPSection:AddButton({Name = "Highlight ESP", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Blissful4992/ESPs/main/HighlightESP.lua"))() end})
     
     -- MISC TAB
     local MiscTab = Hub:CreateTab("Misc")
     
     MiscTab:AddLabel("⚡ Movement & Fun")
     
-    -- Speed
     local speedEnabled = false
     local originalSpeed = 16
     MiscTab:AddToggle({
@@ -736,7 +900,6 @@ function FemboyHub:Init()
         end
     })
     
-    -- Jump Power
     MiscTab:AddSlider({
         Name = "Jump Power",
         Min = 50,
@@ -747,7 +910,6 @@ function FemboyHub:Init()
         end
     })
     
-    -- Gravity
     MiscTab:AddSlider({
         Name = "Gravity",
         Min = 0,
@@ -760,7 +922,6 @@ function FemboyHub:Init()
     
     MiscTab:AddLabel("🎪 Fun Features")
     
-    -- Spin
     local spinning = false
     local spinConnection
     MiscTab:AddToggle({
@@ -789,11 +950,9 @@ function FemboyHub:Init()
         Max = 100,
         Default = 50,
         Callback = function(value)
-            -- Spin speed controlled in toggle
         end
     })
     
-    -- Fling
     MiscTab:AddButton({
         Name = "Fling",
         Callback = function()
@@ -810,7 +969,6 @@ function FemboyHub:Init()
         end
     })
     
-    -- Fly
     MiscTab:AddButton({
         Name = "Simple Fly (E)",
         Callback = function()
