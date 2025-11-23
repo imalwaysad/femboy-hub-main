@@ -42,11 +42,19 @@ local currentTheme = themes.Pink
 
 -- Notification System
 local function CreateNotification(title, text, duration)
-    local NotifGui = Instance.new("ScreenGui")
-    NotifGui.Name = "FemboyNotification"
-    NotifGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    NotifGui.ResetOnSpawn = false
-    NotifGui.Parent = game.CoreGui
+    local success = pcall(function()
+        local NotifGui = Instance.new("ScreenGui")
+        NotifGui.Name = "FemboyNotification"
+        NotifGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        NotifGui.ResetOnSpawn = false
+        
+        pcall(function()
+            NotifGui.Parent = game:GetService("CoreGui")
+        end)
+        
+        if not NotifGui.Parent then
+            NotifGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+        end
     
     local NotifFrame = Instance.new("Frame")
     NotifFrame.Size = UDim2.new(0, 320, 0, 80)
@@ -101,15 +109,24 @@ local function CreateNotification(title, text, duration)
     
     wait(0.5)
     NotifGui:Destroy()
+    end)
 end
 
 -- Create Loading Screen
 local function CreateLoadingScreen()
-    local LoadingGui = Instance.new("ScreenGui")
-    LoadingGui.Name = "FemboyHubLoading"
-    LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    LoadingGui.ResetOnSpawn = false
-    LoadingGui.Parent = game.CoreGui
+    local success = pcall(function()
+        local LoadingGui = Instance.new("ScreenGui")
+        LoadingGui.Name = "FemboyHubLoading"
+        LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        LoadingGui.ResetOnSpawn = false
+        
+        pcall(function()
+            LoadingGui.Parent = game:GetService("CoreGui")
+        end)
+        
+        if not LoadingGui.Parent then
+            LoadingGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+        end
     
     local LoadingFrame = Instance.new("Frame")
     LoadingFrame.Name = "LoadingFrame"
@@ -210,13 +227,23 @@ end
 
 -- Create Main GUI
 function FemboyHub:Init()
-    CreateLoadingScreen()
-    
-    local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = "FemboyHub"
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    ScreenGui.ResetOnSpawn = false
-    ScreenGui.Parent = game.CoreGui
+    -- Wrap everything in pcall for error handling
+    local success, err = pcall(function()
+        CreateLoadingScreen()
+        
+        local ScreenGui = Instance.new("ScreenGui")
+        ScreenGui.Name = "FemboyHub"
+        ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        ScreenGui.ResetOnSpawn = false
+        
+        -- Try CoreGui first, fallback to PlayerGui
+        local success2 = pcall(function()
+            ScreenGui.Parent = game:GetService("CoreGui")
+        end)
+        
+        if not success2 then
+            ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+        end
     
     -- Main Frame
     local MainFrame = Instance.new("Frame")
@@ -817,17 +844,6 @@ function FemboyHub:Init()
     WelcomeTitle.TextSize = 28
     WelcomeTitle.Parent = WelcomeFrame
     
-    local WelcomeDesc = Instance.new("TextLabel")
-    WelcomeDesc.Size = UDim2.new(1, -20, 0, 30)
-    WelcomeDesc.Position = UDim2.new(0, 10, 0, 115)
-    WelcomeDesc.BackgroundTransparency = 1
-    WelcomeDesc.Text = "NOT A S3X SCRIPT"
-    WelcomeDesc.TextColor3 = currentTheme.Accent
-    WelcomeDesc.Font = Enum.Font.GothamBold
-    WelcomeDesc.TextSize = 14
-    WelcomeDesc.TextWrapped = true
-    WelcomeDesc.Parent = WelcomeFrame
-    
     -- Announcement
     local AnnouncementFrame = Instance.new("Frame")
     AnnouncementFrame.Size = UDim2.new(1, 0, 0, 100)
@@ -1106,7 +1122,38 @@ function FemboyHub:Init()
     return Hub
 end
 
--- Initialize
-FemboyHub:Init()
+-- Initialize and return
+local success, result = pcall(function()
+    return FemboyHub:Init()
+end)
+
+if not success then
+    warn("Femboy Hub Error: " .. tostring(result))
+    -- Try again with PlayerGui
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "FemboyHubError"
+    ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    
+    local ErrorFrame = Instance.new("Frame")
+    ErrorFrame.Size = UDim2.new(0, 300, 0, 150)
+    ErrorFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
+    ErrorFrame.BackgroundColor3 = Color3.fromRGB(230, 215, 225)
+    ErrorFrame.Parent = ScreenGui
+    
+    local ErrorCorner = Instance.new("UICorner")
+    ErrorCorner.CornerRadius = UDim.new(0, 15)
+    ErrorCorner.Parent = ErrorFrame
+    
+    local ErrorText = Instance.new("TextLabel")
+    ErrorText.Size = UDim2.new(1, -20, 1, -20)
+    ErrorText.Position = UDim2.new(0, 10, 0, 10)
+    ErrorText.BackgroundTransparency = 1
+    ErrorText.Text = "Error loading Femboy Hub!\n\n" .. tostring(result) .. "\n\nCheck console for details."
+    ErrorText.TextColor3 = Color3.fromRGB(200, 100, 150)
+    ErrorText.Font = Enum.Font.Gotham
+    ErrorText.TextSize = 14
+    ErrorText.TextWrapped = true
+    ErrorText.Parent = ErrorFrame
+end
 
 return FemboyHub
